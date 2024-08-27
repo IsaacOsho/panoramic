@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>360 Image Viewer</title>
+    <style>
+        body {
+            background-color: black;
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+        }
+
+        #logo {
+            width: 20vw; /* Adjust logo size */
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            transform: scale(0.5); /* Adjust scale as needed */
+        }
+
+        #panorama {
+            width: 80vw; /* Panorama size adjusted for iPhone 13 */
+            height: 50vh; /* Adjusted for mobile viewing */
+            display: none;
+            border: 2px solid white;
+        }
+
+        /* New Loader Animation */
+        .loader {
+            --ballcolor: #f2f2f2;
+            --shadow: 0px 0 #ffffff00;
+            --shadowcolor: #ffffff00;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            position: absolute;
+            color: var(--ballcolor);
+            animation: shadowRolling 2s linear infinite;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes shadowRolling {
+
+            0% {
+                box-shadow: var(--shadow),
+                    var(--shadow),
+                    var(--shadow),
+                    var(--shadow);
+            }
+
+            12% {
+                box-shadow: 100px 0 var(--ballcolor),
+                    var(--shadow),
+                    var(--shadow),
+                    var(--shadow);
+            }
+
+            25% {
+                box-shadow: 110px 0 var(--ballcolor),
+                    100px 0 var(--ballcolor),
+                    var(--shadow),
+                    var(--shadow);
+            }
+
+            36% {
+                box-shadow: 120px 0 var(--ballcolor),
+                    110px 0 var(--ballcolor),
+                    100px 0 var(--ballcolor),
+                    var(--shadow);
+            }
+
+            50% {
+                box-shadow: 130px 0 var(--ballcolor),
+                    120px 0 var(--ballcolor),
+                    110px 0 var(--ballcolor),
+                    100px 0 var(--ballcolor);
+            }
+
+            62% {
+                box-shadow: 200px 0 var(--shadowcolor),
+                    130px 0 var(--ballcolor),
+                    120px 0 var(--ballcolor),
+                    110px 0 var(--ballcolor);
+            }
+
+            75% {
+                box-shadow: 200px 0 var(--shadowcolor),
+                    200px 0 var(--shadowcolor),
+                    130px 0 var(--ballcolor),
+                    120px 0 var(--ballcolor);
+            }
+
+            87% {
+                box-shadow: 200px 0 var(--shadowcolor),
+                    200px 0 var(--shadowcolor),
+                    200px 0 var(--shadowcolor),
+                    130px 0 var(--ballcolor);
+            }
+
+            100% {
+                box-shadow: 200px 0 var(--shadowcolor),
+                    200px 0 var(--shadowcolor),
+                    200px 0 var(--shadowcolor),
+                    200px 0 var(--shadowcolor);
+            }
+        }
+
+        /* Thumbnail Button Styling */
+        #thumbnail-button {
+            position: absolute;
+            bottom: 10%;
+            right: 10%;
+            width: 20vw; /* Thumbnail size */
+            cursor: pointer;
+            border: 2px solid white;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        /* Hover Animation for Thumbnail */
+        #thumbnail-button:hover {
+            transform: scale(1.1);
+        }
+    </style>
+    <link rel="stylesheet" href="https://scripts.sirv.com/pannellum/2.5/pannellum.css">
+    <script src="https://scripts.sirv.com/pannellum/2.5/pannellum.js"></script>
+</head>
+
+<body>
+    <img id="logo" src="https://caasiohso.sirv.com/IO%20LOGOArtboard%201%20w.png" alt="Logo">
+    <div id="panorama"></div>
+    
+    <!-- New Loader -->
+    <div class="loader"></div>
+
+    <!-- Thumbnail Button -->
+    <img id="thumbnail-button" src="https://caasiohso.sirv.com/24-8-24%20d.png" alt="Next Panorama">
+
+    <!-- Background Audio -->
+    <audio autoplay loop>
+        <source src="https://caasiohso.sirv.com/people-on-the-lakeside-54421.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        const panoramas = [
+            "https://caasiohso.sirv.com/24-8-24%20b.png",
+            "https://caasiohso.sirv.com/24-8-24%20d.png"
+        ];
+
+        const thumbnails = [
+            "https://caasiohso.sirv.com/24-8-24%20d.png", 
+            "https://caasiohso.sirv.com/24-8-24%20b.png"
+        ];
+
+        let currentPanoramaIndex = 0;
+
+        function loadPanorama(index) {
+            pannellum.viewer('panorama', {
+                "type": "equirectangular",
+                "panorama": panoramas[index]
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const panorama = document.getElementById('panorama');
+            const loader = document.querySelector('.loader');
+            const thumbnailButton = document.getElementById('thumbnail-button');
+
+            // Simulate loading delay for demonstration purposes
+            setTimeout(function() {
+                panorama.style.display = 'block';
+                loader.style.display = 'none';
+            }, 3000); // 3 seconds delay, adjust as necessary
+
+            loadPanorama(currentPanoramaIndex);
+
+            thumbnailButton.addEventListener('click', function() {
+                loader.style.display = 'block';
+                panorama.style.display = 'none';
+                
+                currentPanoramaIndex = (currentPanoramaIndex + 1) % panoramas.length;
+                thumbnailButton.src = thumbnails[(currentPanoramaIndex + 1) % thumbnails.length];
+                setTimeout(function() {
+                    loadPanorama(currentPanoramaIndex);
+                    loader.style.display = 'none';
+                    panorama.style.display = 'block';
+                }, 3000); // Re-display loader for 3 seconds before showing the new panorama
+            });
+        });
+    </script>
+</body>
+
+</html>
