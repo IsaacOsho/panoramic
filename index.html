@@ -36,83 +36,51 @@
 
         /* New Loader Animation */
         .loader {
-            --ballcolor: #f2f2f2;
-            --shadow: 0px 0 #ffffff00;
-            --shadowcolor: #ffffff00;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100px;
             position: absolute;
-            color: var(--ballcolor);
-            animation: shadowRolling 2s linear infinite;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
         }
 
-        @keyframes shadowRolling {
+        .box {
+            width: 20px;
+            height: 20px;
+            margin: 0 8px;
+            border-radius: 50%;
+            animation: jump_4123 1s ease-in-out infinite;
+        }
 
-            0% {
-                box-shadow: var(--shadow),
-                    var(--shadow),
-                    var(--shadow),
-                    var(--shadow);
-            }
+        .box:nth-child(1) {
+            background-color: #4e4e4e;
+            animation-delay: 0.2s;
+        }
 
-            12% {
-                box-shadow: 100px 0 var(--ballcolor),
-                    var(--shadow),
-                    var(--shadow),
-                    var(--shadow);
-            }
+        .box:nth-child(2) {
+            background-color: #bdbdbd;
+            animation-delay: 0.4s;
+        }
 
-            25% {
-                box-shadow: 110px 0 var(--ballcolor),
-                    100px 0 var(--ballcolor),
-                    var(--shadow),
-                    var(--shadow);
-            }
+        .box:nth-child(3) {
+            background-color: #4e4e4e;
+            animation-delay: 0.6s;
+        }
 
-            36% {
-                box-shadow: 120px 0 var(--ballcolor),
-                    110px 0 var(--ballcolor),
-                    100px 0 var(--ballcolor),
-                    var(--shadow);
+        .box:nth-child(4) {
+            background-color: #bdbdbd;
+            animation-delay: 0.8s;
+        }
+
+        @keyframes jump_4123 {
+            0%, 100% {
+                transform: translateY(0);
             }
 
             50% {
-                box-shadow: 130px 0 var(--ballcolor),
-                    120px 0 var(--ballcolor),
-                    110px 0 var(--ballcolor),
-                    100px 0 var(--ballcolor);
-            }
-
-            62% {
-                box-shadow: 200px 0 var(--shadowcolor),
-                    130px 0 var(--ballcolor),
-                    120px 0 var(--ballcolor),
-                    110px 0 var(--ballcolor);
-            }
-
-            75% {
-                box-shadow: 200px 0 var(--shadowcolor),
-                    200px 0 var(--shadowcolor),
-                    130px 0 var(--ballcolor),
-                    120px 0 var(--ballcolor);
-            }
-
-            87% {
-                box-shadow: 200px 0 var(--shadowcolor),
-                    200px 0 var(--shadowcolor),
-                    200px 0 var(--shadowcolor),
-                    130px 0 var(--ballcolor);
-            }
-
-            100% {
-                box-shadow: 200px 0 var(--shadowcolor),
-                    200px 0 var(--shadowcolor),
-                    200px 0 var(--shadowcolor),
-                    200px 0 var(--shadowcolor);
+                transform: translateY(-30px);
             }
         }
 
@@ -141,7 +109,12 @@
     <div id="panorama"></div>
     
     <!-- New Loader -->
-    <div class="loader"></div>
+    <div class="loader">
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+    </div>
 
     <!-- Thumbnail Button -->
     <img id="thumbnail-button" src="https://caasiohso.sirv.com/24-8-24%20d.png" alt="Next Panorama">
@@ -154,13 +127,13 @@
 
     <script>
         const panoramas = [
-            "https://caasiohso.sirv.com/24-8-24%20b.png",
-            "https://caasiohso.sirv.com/24-8-24%20d.png"
+            "https://caasiohso.sirv.com/MR%20ARIYO0002.jpg",
+            "https://caasiohso.sirv.com/another-panorama.jpg"
         ];
 
         const thumbnails = [
             "https://caasiohso.sirv.com/24-8-24%20d.png", 
-            "https://caasiohso.sirv.com/24-8-24%20b.png"
+            "https://caasiohso.sirv.com/next-thumbnail.png"
         ];
 
         let currentPanoramaIndex = 0;
@@ -189,10 +162,15 @@
                 loader.style.display = 'block';
                 panorama.style.display = 'none';
                 
+                // Update index to load the next panorama
                 currentPanoramaIndex = (currentPanoramaIndex + 1) % panoramas.length;
+                loadPanorama(currentPanoramaIndex);
+
+                // Swap thumbnail to the next one and move it to the correct position
                 thumbnailButton.src = thumbnails[(currentPanoramaIndex + 1) % thumbnails.length];
+
+                // Simulate loading delay again before displaying the new panorama
                 setTimeout(function() {
-                    loadPanorama(currentPanoramaIndex);
                     loader.style.display = 'none';
                     panorama.style.display = 'block';
                 }, 3000); // Re-display loader for 3 seconds before showing the new panorama
